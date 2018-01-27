@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import './App.css';
-import Hammer from "react-hammerjs";
-import svgmap from './floor1_20171114203824923.svg';
-import renderHTML from 'react-render-html';
-
+// import Hammer from "react-hammerjs";
+// import svgmap from './floor1_20171114203824923.svg';
+// import renderHTML from 'react-render-html';
+import MyD3Comp from './MyD3Comp';
 
 class App extends Component {
   constructor(props) {
@@ -20,13 +20,14 @@ class App extends Component {
   }
 
   componentDidMount() {
+    // console.log(svgmap);
     fetch('/stores').then(res => res.json()).then((stores) => {
-
       this.setState({stores})
     });
   }
 
   handleTap(ev) {
+    this.setState({hammerAction: 'clicked '+ev.target.id})
     console.log(ev.target.id);
   }
 
@@ -42,16 +43,16 @@ class App extends Component {
   render() {
     return (<div className="App">
       <h1>Stores</h1>
-      <Hammer onTap={this.handleTap}
+      <MyD3Comp />
+      {/* <Hammer onTap={this.handleTap}
               onSwipe={this.handleSwipe}
               onPan={this.handlePan}>
         <div>{renderHTML(svgmap)}</div>
-      </Hammer>
+      </Hammer> */}
 
       <p>{this.state.hammerAction}</p>
       {
-        this.state.stores.map(store => <div key={store.ID}>{store.post_title}
-        </div>)
+        // this.state.stores.map(store => <div key={store.ID}>{store.post_title}</div>)
       }
 
     </div>);
