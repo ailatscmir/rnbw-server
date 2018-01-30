@@ -13,7 +13,11 @@
     "react-hammerjs": "^1.0.1",
     "react-inlinesvg": "^0.7.4",
     "react-render-html": "^0.6.0",
-    "react-scripts": "1.1.0"
+    "react-scripts": "1.1.0",
+    "react-xml-parser": "^1.0.3",
+    "simple-object-query": "^1.6.1",
+    "xml2js": "^0.4.19",
+    "xml2js-parser": "^1.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
