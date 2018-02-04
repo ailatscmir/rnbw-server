@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-const categoryColors = {
-  clothes: '#F2C94C',
-  entertaiment: '#BB6BD9',
-  maintance: '#56CCF2',
-  foodandhome: '#EB5757',
-  electronics: '#2D9CDB'
-};
+// const categoryColors = {
+//   clothes: '#F2C94C',
+//   entertaiment: '#BB6BD9',
+//   maintance: '#56CCF2',
+//   foodandhome: '#EB5757',
+//   electronics: '#2D9CDB'
+// };
 class Category extends Component {
   constructor(props) {
     super(props);
