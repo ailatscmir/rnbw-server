@@ -3,22 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "d3": "^4.12.2",
+    "json-query": "^2.2.2",
     "prop-types": "^15.6.0",
     "raw-loader": "^0.5.1",
     "react": "^16.2.0",
-    "react-d3-library": "^1.1.8",
     "react-dom": "^16.2.0",
-    "react-faux-dom": "^4.1.0",
     "react-hammerjs": "^1.0.1",
-    "react-inlinesvg": "^0.7.4",
-    "react-render-html": "^0.6.0",
+    "react-redux": "^5.0.6",
     "react-scripts": "1.1.0",
-    "react-xml-parser": "^1.0.3",
     "redux": "^3.7.2",
     "simple-object-query": "^1.6.1",
-    "xml2js": "^0.4.19",
-    "xml2js-parser": "^1.1.1"
+    "xml2js": "^0.4.19"
   },
   "scripts": {
     "start": "react-scripts start",

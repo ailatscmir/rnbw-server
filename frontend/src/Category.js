@@ -1,31 +1,23 @@
-import React, {Component} from 'react';
-// const categoryColors = {
-//   clothes: '#F2C94C',
-//   entertaiment: '#BB6BD9',
-//   maintance: '#56CCF2',
-//   foodandhome: '#EB5757',
-//   electronics: '#2D9CDB'
-// };
+import React, {Component} from 'react'
+import Area from './Area';
 class Category extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      paths: props.children.path
-    };
-    this.storePathSelect = this.storePathSelect.bind(this);
+  // constructor(props) {
+  //   super(props);
+  // }
+  componentDidMount() {
+    // console.log(this.props);
   }
-
-  storePathSelect(ev) {
-    console.log(ev.target);
-    return true;
-  }
-
   render() {
-    var paths = this.state.paths;
-    return (Object.values(paths).map((path) => {
-      // return <text key={index} y={(index+3)*30}>{value.id}</text>;
-      return <path id={path.id} key={path.id} d={path.d} onClick={this.storePathSelect}></path>;
-    }))
+    var category = this.props.value;
+    return (<g id={category.id}>
+      {
+        category.path.map((path) => {
+          return <Area key={path.id} attr={path} />
+          // return <path key={path.id} id={path.id} d={path.d} fill={path.fill}/>
+        })
+      }
+    </g>)
   }
 }
+
 export default Category;

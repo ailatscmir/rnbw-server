@@ -1,13 +1,15 @@
-import { SELECT_STORE } from "../constants/action-types";
 const initialState = {
-  store: ''
+  selectedStore: '',
+  storesArray: []
 };
 const rootReducer = (state = initialState, action) => {
-
   switch (action.type) {
-    case SELECT_STORE:
-      return { ...state, store: action.payload};
-    default: return state;
+    case 'EXEC_TEST':
+      return {...state,selectedStore: action.payload};
+    case 'EXEC_TEST2':
+      return {...state,storesArray: action.payload};
+    default:
+        return state;
   }
 
 };
