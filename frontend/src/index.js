@@ -6,16 +6,17 @@ import ReactDOM from 'react-dom';
 import { Provider } from "react-redux";
 import configureStore from "./store/index";
 
-
 import './index.css';
 import App from './App';
 
-function logger (){
-  console.log(JSON.stringify(store.getState()));
-}
+
 
 const store = configureStore();
-store.subscribe(logger);
+
+function conoutput(){
+  console.log(store.getState())
+}
+store.subscribe(conoutput);
 
 ReactDOM.render(
   <Provider store={store}>

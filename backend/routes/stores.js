@@ -10,18 +10,21 @@ const apiUrl = "http://trkraduga.ru/wp-json/waysApi/stores";
 const htmlentity = new entities();
 router.get('/', function(req, res, next) {
     request.get({
-        url: apiUrl
+        url: apiUrl,
+        timeout: 3000
         // qs: propertiesObject
     }, function(error, response, body) {
-        if (!error && response.statusCode == 200) {
-            // res.json(body);
+        if (!error) {
+
             var apiJson = JSON.parse(body);
-            var wpRoutes = apiJson;
-            arraySort(wpRoutes,'post_title');
-            // console.log(apiJson);
-            res.send(wpRoutes);
-            // console.log(htmlentity.decode(body));
-        }
+            if (apiJson.data) {if (apiJson.data.status) res.send({error: 'apiError'})}
+            else {
+              console.log('itworks');
+              arraySort(apiJson,'post_title');
+              res.send(apiJson);
+            };
+
+        } else res.send({error:'serverDown'})
     });
 
 });

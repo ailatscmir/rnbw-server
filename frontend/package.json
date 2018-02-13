@@ -12,8 +12,12 @@
     "react-redux": "^5.0.6",
     "react-scripts": "1.1.0",
     "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0",
     "simple-object-query": "^1.6.1",
-    "xml2js": "^0.4.19"
+    "svg-path-bounds": "^1.0.1",
+    "whatwg-fetch": "^2.0.3",
+    "xml2js": "^0.4.19",
+    "electron": "^1.8.2"
   },
   "scripts": {
     "start": "react-scripts start",

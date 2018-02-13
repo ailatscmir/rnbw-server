@@ -5,6 +5,8 @@ import {Parser} from 'xml2js';
 import jsonQuery from 'json-query';
 
 import rawMap from './floor1_2018129819337.svg';
+
+
 import Category from './Category';
 
 function svgAction(data) {
@@ -18,7 +20,7 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 const mapStateToProps = (state) => {
-  return {selectedStore: state.selectedStore}
+  return {selectedStore: state.selectedStore, boundingBox: state.boundingBox}
 }
 
 class InteractiveSvg extends Component {
@@ -29,14 +31,14 @@ class InteractiveSvg extends Component {
     }
     this.handleSvgClick = this.handleSvgClick.bind(this);
   }
-  componentDidMount(){
+  componentDidMount() {
     // console.log(rawMap );
-    var xml=[];
-    var XMLParser = new Parser({explicitArray: false,explicitRoot: false,mergeAttrs:true});
-    XMLParser.parseString(rawMap, function (err, result) {
+    var xml = [];
+    var XMLParser = new Parser({explicitArray: false, explicitRoot: false, mergeAttrs: true});
+    XMLParser.parseString(rawMap, function(err, result) {
       xml = result;
     });
-    this.setState({xml:xml});
+    this.setState({xml: xml});
     // console.log(SOQ.get(xml,{'item.name':'svg'}));
 
   }
@@ -47,21 +49,33 @@ class InteractiveSvg extends Component {
 
   render() {
     // console.log(jsonQuery('[*][**]g[*id~landmarks]',{data: this.state.xml,allowRegexp:true}).value);
-    var viewBox = jsonQuery('viewBox',{data: this.state.xml,allowRegexp:true}).value;
-    var categories = jsonQuery('[*][**]g[*id~landmarks]',{data: this.state.xml,allowRegexp:true}).value;
+    var viewBox = jsonQuery('viewBox', {
+      data: this.state.xml,
+      allowRegexp: true
+    }).value;
+    var categories = jsonQuery('[*][**]g[*id~landmarks]', {
+      data: this.state.xml,
+      allowRegexp: true
+    }).value;
+    // (this.props.boundingBox.lenght) ? console.log('123');
     // console.log('[*][**]path[id'+this.props.selectedStore);
-    console.log(jsonQuery('[*][**]g.path[id='+this.props.selectedStore+']',{data: this.state.xml,allowRegexp:true}).value);
-    return (
-      (this.state.xml==null)
-        ?<p>loading</p>
-        :<svg viewBox={viewBox}>
-          <line x1="20" y1="100" x2="100" y2="20" stroke="black"/>
-          {categories.map((category) => {
+    let boundingBox = (this.props.boundingBox) ? this.props.boundingBox : null;
+    let boundingBoxDOM = (boundingBox) ? <rect x={boundingBox[0]} y={boundingBox[1]} height={boundingBox[3]-boundingBox[1]} width={boundingBox[2]-boundingBox[0]} stroke="black" /> :  <rect x1='40' y1='40' x2='100' y2='100' />;
+    let mapDOM = (this.state.xml == null)
+      ? <p>loading</p>
+      : <svg viewBox={viewBox}>
+        <g>{boundingBoxDOM}</g>
+        {
+          categories.map((category) => {
             return <Category key={category.id} value={category}/>
-          })}
-        </svg>
+          })
+        }
+      </svg>;
+    return (<div>
 
-    );
+      {mapDOM}
+    </div>
+    )
   }
 }
 

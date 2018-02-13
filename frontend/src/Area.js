@@ -1,43 +1,42 @@
 import React, {Component} from 'react'
 import {connect} from "react-redux";
 import {bindActionCreators} from 'redux';
+import getBounds from 'svg-path-bounds'
 
-const areaClick = (data) =>{
-  return {type: 'EXEC_TEST', payload: data};
+const selectArea = (id,d) =>{
+  return {type: 'SELECT_AREA', payload: id};
 }
+
 const mapDispatchToProps = (dispatch) => {
   return {
-    areaClick: bindActionCreators(areaClick, dispatch)
+    selectArea: bindActionCreators(selectArea, dispatch),
   }
 }
 
 const mapStateToProps = (state) => {
-  return {selectedStore: state.selectedStore}
+  return {selectedArea: state.selectedArea}
 }
 
 class Area extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      test: ''
-    }
     this.handleAreaClick = this.handleAreaClick.bind(this);
   }
 
-  componentDidMount() {
+  componentDidMount() {}
 
-  }
   handleAreaClick(e) {
     e.preventDefault();
-    this.props.areaClick(e.target.id);
-
+    var targetArea = e.target;
+    this.props.selectArea(e.target.id,targetArea.getAttribute('d'));
   }
+
   render() {
-
     var area = this.props.attr;
-    var selectedStore = this.props.selectedStore;
-    return (<path id={area.id} d={area.d} fill={(area.id!==selectedStore)?area.fill:'#000000'} opacity={((selectedStore!=='')&&(area.id!==selectedStore))?'0.5':'1'} onClick={this.handleAreaClick}/>)
+    var selectedArea = this.props.selectedArea;
+    return (<path id={area.id} d={area.d} fill={(area.id!==selectedArea)?area.fill:'#000000'} opacity={((selectedArea!=='')&&(area.id!==selectedArea))?'0.5':'1'} onClick={this.handleAreaClick}/>)
   }
+
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(Area);

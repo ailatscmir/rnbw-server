@@ -1,13 +1,9 @@
 const initialState = {
-  selectedStore: '',
-  storesArray: []
+  selectedArea: ''
 };
 const rootReducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'EXEC_TEST':
-      return {...state,selectedStore: action.payload};
-    case 'EXEC_TEST2':
-      return {...state,storesArray: action.payload};
+    case 'SELECT_AREA': return {...state, selectedArea : action.payload}
     default:
         return state;
   }
