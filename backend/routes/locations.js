@@ -4,7 +4,7 @@ var request = require('request');
 var entities = require('html-entities').AllHtmlEntities;
 var arraySort = require('array-sort');
 
-const apiUrl = "http://trkraduga.ru/wp-json/waysApi/stores";
+const apiUrl = "http://trkraduga.ru/wp-json/waysApi/locations";
 // const propertiesObject = { per_page:'60' };
 /* GET home page. */
 const htmlentity = new entities();

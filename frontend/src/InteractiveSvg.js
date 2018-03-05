@@ -1,11 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from "react-redux";
 import {bindActionCreators} from 'redux';
-import {Parser} from 'xml2js';
 import jsonQuery from 'json-query';
-
-import rawMap from './floor1_2018129819337.svg';
-
 
 import Category from './Category';
 
@@ -31,17 +27,12 @@ class InteractiveSvg extends Component {
     }
     this.handleSvgClick = this.handleSvgClick.bind(this);
   }
-  componentDidMount() {
-    // console.log(rawMap );
-    var xml = [];
-    var XMLParser = new Parser({explicitArray: false, explicitRoot: false, mergeAttrs: true});
-    XMLParser.parseString(rawMap, function(err, result) {
-      xml = result;
-    });
-    this.setState({xml: xml});
-    // console.log(SOQ.get(xml,{'item.name':'svg'}));
 
+
+
+  componentDidMount() {
   }
+  
   handleSvgClick(e) {
     e.preventDefault();
     this.props.svgClick('circle');

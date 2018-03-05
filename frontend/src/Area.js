@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from "react-redux";
 import {bindActionCreators} from 'redux';
-import getBounds from 'svg-path-bounds'
+// import getBounds from 'svg-path-bounds'
 
 const selectArea = (id,d) =>{
   return {type: 'SELECT_AREA', payload: id};
