@@ -9,8 +9,8 @@ class Layer extends Component {
       {
         (type.includes('landmarks'))
           ? (data.path.length)
-            ? data.path.map((location) => {console.log(location);return <Location data={location}/>})
-            : <Location data={data.path}/>
+            ? data.path.map((location) => {console.log(location);return <Location key={location['@attributes']['id']} data={location}/>})
+            : <Location key={data.path['@attributes']['id']} data={data.path}/>
           : 0
       }
     </g>);

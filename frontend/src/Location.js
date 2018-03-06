@@ -8,7 +8,7 @@ class Location extends Component {
     let location = this.props.data;
     console.log(location);
     return (
-      <path d={location['@attributes']['d']} fill={location['@attributes']['fill']}/>
+      <path key={location['@attributes']['id']} d={location['@attributes']['d']} fill={location['@attributes']['fill']}/>
     )
   }
 }
