@@ -13,10 +13,6 @@ import App from './App';
 
 const store = configureStore();
 
-function conoutput(){
-  console.log(store.getState());
-}
-store.subscribe(conoutput);
 
 ReactDOM.render(
   <Provider store={store}>

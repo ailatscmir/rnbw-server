@@ -3,6 +3,8 @@ import rootReducer from '../reducers';
 import thunk from 'redux-thunk'
 
 export default function configureStore(initialState) {
-  const store = createStore(rootReducer, initialState, applyMiddleware(thunk))
-  return store
+  const store = createStore(rootReducer, initialState, /* preloadedState, */
+   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(), applyMiddleware(thunk),);
+
+  return store;
 }

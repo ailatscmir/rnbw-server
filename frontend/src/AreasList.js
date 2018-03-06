@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {connect} from "react-redux";
 
 import List, { ListItem, ListItemText } from 'material-ui/List';
-import { CircularProgress } from 'material-ui/Progress';
+import { LinearProgress } from 'material-ui/Progress';
 import { withStyles } from 'material-ui/styles';
 
 const mapDispatchToProps = (dispatch) => {
@@ -21,7 +21,6 @@ class AreasList extends Component {
   componentDidMount() {}
 
   render() {
-    const { classes } = this.props;
     return (<List>
       {(this.props.fetchLocations==='complete')&&(this.props.locations.length>0)
         ? this.props.locations.map((location) => {
@@ -29,7 +28,7 @@ class AreasList extends Component {
           <ListItemText primary={location['post_title']} />
         </ListItem>;
         })
-        : <CircularProgress className={classes.progress} />}
+        : <LinearProgress color="secondary" />}
     </List>)
   }
 }
