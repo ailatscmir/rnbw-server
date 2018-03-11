@@ -2,7 +2,16 @@ const initialState = {
   fetchLocations: 'none',
   fetchMap: 'none',
   locations: [],
-  map: []
+  map: [],
+  containerSize:{
+    height: Number(),
+    width: Number()
+  },
+  mapSize: {
+    height: Number(),
+    width: Number()
+  },
+  currentFloor: '1'
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -11,6 +20,9 @@ const rootReducer = (state = initialState, action) => {
     case 'FETCH_MAP': return {...state, fetchMap : action.payload};
     case 'SAVE_LOCATIONS': return {...state, locations : action.payload};
     case 'SAVE_MAP': return {...state, map : action.payload};
+    case 'GOTO_FLOOR': return {...state, currentFloor: action.payload};
+    case 'SET_CONTAINER': return {...state, containerSize: action.payload};
+    case 'SET_MAPSIZE': return {...state, mapSize: action.payload};
     default:
         return state;
   }

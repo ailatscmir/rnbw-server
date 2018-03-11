@@ -3,23 +3,18 @@ html, body,#root {
     margin:0;
 }
 
+#root{
+  display:flex;
+  flex-direction: row;
+  align-content: stretch;
+}
+
 .app {
-    height:100%;
-    display:flex;
-    display: -webkit-flex;
-    flex-direction: row;
-    -webkit-flex-direction: row;
-    -webkit-align-content: stretch;
-    align-content: stretch;
+  flex:1;
+  position:relative;
 }
 
-.main-container {
-   -webkit-flex: 1;
-   flex:1;
-   position:relative;
-}
-
-.child {
+.fullScreenFlex {
     position:absolute;
     width:100%;
     height:100%;
@@ -28,4 +23,17 @@ html, body,#root {
 .scrollable {
      overflow-y:auto;
    	-webkit-overflow-scrolling:touch;
+}
+
+.showFloor {
+  display: block;
+}
+
+.hideFloor {
+  display: none;
+}
+
+#interactiveSvg [class*=landmarks-]{
+  stroke: #fff;
+  stroke-width: 2px;
 }

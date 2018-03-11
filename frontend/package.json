@@ -12,9 +12,11 @@
     "react-hammerjs": "^1.0.1",
     "react-redux": "^5.0.6",
     "react-scripts": "1.1.1",
+    "react-sizeme": "^2.3.6",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
     "svg-path-bounds": "^1.0.1",
+    "transformation-matrix": "^1.8.0",
     "whatwg-fetch": "^2.0.3"
   },
   "scripts": {
