@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import Location from './Location';
+import Pathfinder from './Pathfinder';
 class Layer extends Component {
 
   componentDidMount() {}
@@ -13,7 +14,10 @@ class Layer extends Component {
           ? (data.path.length)
             ? data.path.map((location) => {return <Location key={location['@attributes']['id']} data={location}/>})
             : <Location key={data.path['@attributes']['id']} data={data.path}/>
-          : 0
+          : null
+      }
+      {
+        (type==='routes')?<Pathfinder data={data} />:null
       }
     </g>);
   }

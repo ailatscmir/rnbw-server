@@ -7,9 +7,10 @@ import {scale, translate, transform, toCSS} from 'transformation-matrix';
 
 import Floor from './Floor';
 
-function clampScale(value, min, max) {
-  return Math.min(Math.max(min, value), max);
+function clampZoom(zoom, min, max) {
+  return Math.min(Math.max(min, zoom), max);
 }
+
 
 function clampPan(value, range) {
   let clampedValue = value;
@@ -20,8 +21,8 @@ function clampPan(value, range) {
   return clampedValue;
 }
 
-function getTransformation({x, y, elementScale}) {
-  return toCSS(transform(translate(x, y), scale(elementScale, elementScale)));
+function getTransformation({x, y, zoom}) {
+  return toCSS(transform(translate(x, y), scale(zoom, zoom)));
 }
 
 function floorCompare(a, b) {
@@ -32,7 +33,7 @@ function floorCompare(a, b) {
   return 0;
 }
 
-function getMinScale({
+function getMinZoom({
   height: mapHeight,
   width: mapWidth
 }, {
@@ -45,12 +46,13 @@ function getMinScale({
 }
 
 function fitToContainer(mapSize, containerSize) {
-  let scaleValue = getMinScale(mapSize, containerSize);
   let {height: mapHeight, width: mapWidth} = mapSize;
   let {height: containerHeight, width: containerWidth} = containerSize;
-  let x = (containerWidth - mapWidth * scaleValue) / 2;
-  let y = (containerHeight - mapHeight * scaleValue) / 2;
-  return {elementX: x, elementY: y, elementScale: scaleValue};
+
+  let zoom = getMinZoom(mapSize, containerSize);
+  let x = (containerWidth - mapWidth * zoom) / 2;
+  let y = (containerHeight - mapHeight * zoom) / 2;
+  return {x: x, y: y, zoom: zoom};
 }
 
 class InteractiveSvg extends Component {
@@ -64,23 +66,23 @@ class InteractiveSvg extends Component {
       width: (Number)(dimensions[2])
     };
     let containerSize = this.props.size;
-    let {elementX, elementY, elementScale} = fitToContainer(mapSize, containerSize);
-    let minScale = getMinScale(mapSize, containerSize);
+    let {x, y, zoom} = fitToContainer(mapSize, containerSize);
     this.state = {
-      resistance: 0.95,
+      resistance: 0.92,
+      factor: 20,
       floors: this.props.data,
       mapSize: mapSize,
       containerSize: containerSize,
-      elementScale: elementScale,
-      currentScale: elementScale,
-      minScale: minScale,
-      maxScale: 4,
+      zoom: zoom,
+      currentZoom: zoom,
+      minZoom: zoom,
+      maxZoom: 4,
       rangeX: 0,
       rangeY: 0,
-      elementX: elementX,
-      elementY: elementY,
-      currentX: 0,
-      currentY: 0,
+      x: x,
+      y: y,
+      currentX: x,
+      currentY: y,
       pan: false,
       pinch: false
     };
@@ -95,39 +97,57 @@ class InteractiveSvg extends Component {
   }
 
   componentDidMount() {
-    this.updateRange();
+    this.updateRange(this.state.zoom);
   }
 
-  updateRange() {
+  updateRange(zoom) {
     let {height: mapHeight, width: mapWidth} = this.state.mapSize;
     let {height: containerHeight, width: containerWidth} = this.state.containerSize;
-    let elementScale = this.state.elementScale;
-    let rangeX = mapWidth * elementScale - containerWidth;
-    let rangeY = mapHeight * elementScale - containerHeight;
+    let rangeX = mapWidth * zoom - containerWidth;
+    let rangeY = mapHeight * zoom - containerHeight;
     this.setState({rangeX, rangeY});
   }
 
-  moveTo({elementX, elementY}) {
-    let {rangeX, rangeY} = this.state;
-    this.setState({
-      elementX: clampPan(elementX, rangeX),
-      elementY: clampPan(elementY, rangeY)
-    });
+  transformMap({
+    x = this.state.x,
+    y = this.state.y,
+    zoom = this.state.zoom,
+    current = false})
+    {
+    let {rangeX, rangeY, minZoom,maxZoom} = this.state;
+    zoom = clampZoom(zoom,minZoom,maxZoom);
+    console.log(x,y,zoom);
+    this.updateRange(zoom);
+    if (current) {
+      this.setState({
+        currentX: clampPan(x, rangeX),
+        currentY: clampPan(y, rangeY),
+        currentZoom: zoom
+      })
+    } else {
+      this.setState({
+        x: clampPan(x, rangeX),
+        y: clampPan(y, rangeY),
+        zoom: zoom
+      })
+    }
   }
 
-  braking(velocityX, velocityY, resistance) {
-    // console.log({velocityX,velocityY});
-    let factor = 15;
-    let {elementX, elementY} = this.state;
+  // scaleTo({zoom:zoom,current = false}){
+  //
+  // }
+
+  braking(velocityX, velocityY) {
+    let {factor, resistance} = this.state;
+    let {x, y} = this.state;
     if (!(this.state.pan)) {
-      this.moveTo({
-        elementX: this.state.elementX + velocityX * factor,
-        elementY: this.state.elementY + velocityY * factor
-      })
-      // console.log({velocity:velocity,resistance:resistance});
+      this.transformMap({
+        x: x + velocityX * factor,
+        y: y + velocityY * factor
+      });
       if ((Math.abs(velocityX * resistance * factor) > 0.5) && (Math.abs(velocityY * resistance * factor) > 0.5)) {
         setTimeout(() => {
-          this.braking(velocityX * resistance, velocityY * resistance, resistance)
+          this.braking(velocityX * resistance, velocityY * resistance)
         }, 10);
       }
     }
@@ -135,10 +155,11 @@ class InteractiveSvg extends Component {
 
   handlePan(ev) {
     ev.preventDefault();
-    let {elementX, elementY, rangeX, rangeY} = this.state;
-    this.setState({
-      currentX: clampPan(elementX + ev.deltaX, rangeX),
-      currentY: clampPan(elementY + ev.deltaY, rangeY)
+    let {x, y} = this.state;
+    this.transformMap({
+      x: x + ev.deltaX,
+      y: y + ev.deltaY,
+      current: true
     });
   }
 
@@ -150,66 +171,53 @@ class InteractiveSvg extends Component {
   handlePanEnd(ev) {
     ev.preventDefault();
     let {currentX, currentY} = this.state;
-    this.setState({pan: false, elementX: currentX, elementY: currentY});
-
-    this.braking(ev.velocityX, ev.velocityY, this.state.resistance);
+    this.setState({pan: false});
+    this.transformMap({ x:currentX, y:currentY });
+    this.braking(ev.velocityX, ev.velocityY);
   }
 
   handlePanCancel(ev) {
     ev.preventDefault();
     let {currentX, currentY} = this.state;
-    this.setState({pan: false, elementX: currentX, elementY: currentY});
+    this.setState({pan: false});
+    this.transformMap({ x:currentX, y:currentY });
+    this.braking(ev.velocityX, ev.velocityY);
   }
 
   handleWheel(ev) {
     ev.preventDefault();
     let deltaY = ev.deltaY;
     let {
-      elementScale,
-      minScale,
-      maxScale,
-      elementX,
-      elementY,
-      rangeX,
-      rangeY,
+      zoom,
+      minZoom,
+      maxZoom,
+      x,
+      y,
       mapSize
     } = this.state;
-    let centerPoint = {
-      x: elementX + mapSize.width * elementScale / 2,
-      y: elementY + mapSize.height * elementScale / 2
-    }
-    elementScale = clampScale(elementScale + deltaY / 100, minScale, maxScale);
-    let currentX = centerPoint.x - mapSize.width * elementScale / 2;
-    let currentY = centerPoint.y - mapSize.height * elementScale / 2;
-    this.setState({elementScale: elementScale});
-    this.updateRange();
-    this.setState({
-      elementX: clampPan(currentX, rangeX),
-      elementY: clampPan(currentY, rangeY)
-    });
+    let newZoom = clampZoom(zoom + deltaY/Math.pow(maxZoom,1/zoom)/100, minZoom, maxZoom);
+    let newX = x+(zoom-newZoom)*mapSize.width/2;
+    let newY = y+(zoom-newZoom)*mapSize.height/2;
+    this.transformMap({x:newX,y:newY,zoom:newZoom});
   }
 
   handlePinchStart(ev) {
-    console.log(ev.type);
-    this.setState({pinch:true});
+    this.setState({pinch: true});
   }
 
   handlePinchEnd(ev) {
-    console.log(ev.type);
-    let {currentScale,minScale,maxScale} = this.state;
-
-    this.setState({elementScale:clampScale(currentScale,minScale,maxScale)});
-    this.updateRange();
+    this.setState({pinch: false});
+    let {currentX,currentY,currentZoom} = this.state;
+    this.transformMap({x:currentX,y:currentY,zoom: currentZoom});
   }
 
   handlePinch(ev) {
     ev.preventDefault();
-
-    let {elementScale,minScale,maxScale} = this.state;
-    let currentScale = ev.scale*elementScale;
-    this.setState({currentScale:clampScale(currentScale,minScale,maxScale)});
-
-
+    let {x,y,zoom,mapSize} = this.state;
+    let newZoom = zoom*ev.scale;
+    let newX = x+(zoom-newZoom)*mapSize.width/2;
+    let newY = y+(zoom-newZoom)*mapSize.height/2;
+    this.transformMap({x:newX,y:newY,zoom:newZoom,current:true});
   }
 
   render() {
@@ -227,7 +235,14 @@ class InteractiveSvg extends Component {
     };
 
     let {mapSize, containerSize} = this.state;
-    let {elementX, elementY, currentX, currentY, elementScale,currentScale} = this.state;
+    let {
+      x,
+      y,
+      currentX,
+      currentY,
+      zoom,
+      currentZoom
+    } = this.state;
     let floors = this.state.floors;
 
     floors.sort(floorCompare);
@@ -236,29 +251,23 @@ class InteractiveSvg extends Component {
         height: '100%',
         overflow: 'hidden'
       }}>
-      <Hammer options={options}
-        onWheel={this.handleWheel}
-        onPanStart={this.handlePanStart}
-        onPanEnd={this.handlePanEnd}
-        onPanCancel={this.handlePanCancel}
-        onPan={this.handlePan}
-        onPinchStart={this.handlePinchStart}
-        onPinchEnd={this.handlePinchEnd}
-        onPinch={this.handlePinch}
-        >
+      <Hammer options={options} onWheel={this.handleWheel} onPanStart={this.handlePanStart} onPanEnd={this.handlePanEnd} onPanCancel={this.handlePanCancel} onPan={this.handlePan} onPinchStart={this.handlePinchStart} onPinchEnd={this.handlePinchEnd} onPinch={this.handlePinch}>
         <div>
           <svg id='interactiveSvg' height={mapSize.height} width={mapSize.width} viewBox={'0 0 3500 1400'} preserveAspectRatio='xMidYMid meet'>
             <rect fill={'#fff'} x={0} y={0} height={containerSize.height} width={containerSize.width}/>
             <g className='controlGroup' transform={getTransformation({
-                x: (!(this.state.pan))
-                  ? elementX
-                  : currentX,
-                y: (!(this.state.pan))
-                  ? elementY
-                  : currentY,
-                elementScale: (this.state.pinch)?currentScale:elementScale
+                x: ((this.state.pan)||(this.state.pinch))
+                  ? currentX
+                  : x,
+                y: ((this.state.pan)||(this.state.pinch))
+                  ? currentY
+                  : y,
+                zoom: (this.state.pinch)
+                  ? currentZoom
+                  : zoom
               })}>
-              <rect fill={'#ccc'} x={0} y={0} height={mapSize.height} width={mapSize.width}/> {
+              {/* <rect fill={'#ccc'} x={0} y={0} height={mapSize.height} width={mapSize.width}/>  */}
+              {
                 floors.map((floor, index) => {
                   return <Floor key={floor['title']} index={index} data={floor['g']}/>;
                 })

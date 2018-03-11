@@ -32,8 +32,11 @@ html, body,#root {
 .hideFloor {
   display: none;
 }
+.controlGroup{
+  /*transition: transform 0.01s;*/
+}
 
-#interactiveSvg [class*=landmarks-]{
+#interactiveSvg  [class*=landmarks-]{
   stroke: #fff;
   stroke-width: 2px;
 }
