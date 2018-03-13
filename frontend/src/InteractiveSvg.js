@@ -13,11 +13,14 @@ function clampZoom(zoom, min, max) {
 
 
 function clampPan(value, range) {
+
   let clampedValue = value;
   if (range > 0) {
     clampedValue = Math.min(Math.max(0 - range, value), 0);
-  } else
+  } else {
     clampedValue = Math.abs(range / 2)
+  };
+  console.log({value,range,clampedValue});
   return clampedValue;
 }
 
@@ -116,7 +119,6 @@ class InteractiveSvg extends Component {
     {
     let {rangeX, rangeY, minZoom,maxZoom} = this.state;
     zoom = clampZoom(zoom,minZoom,maxZoom);
-    console.log(x,y,zoom);
     this.updateRange(zoom);
     if (current) {
       this.setState({
@@ -128,7 +130,10 @@ class InteractiveSvg extends Component {
       this.setState({
         x: clampPan(x, rangeX),
         y: clampPan(y, rangeY),
-        zoom: zoom
+        currentX: clampPan(x, rangeX),
+        currentY: clampPan(y, rangeY),
+        zoom: zoom,
+        currentZoom:zoom
       })
     }
   }
@@ -198,6 +203,7 @@ class InteractiveSvg extends Component {
     let newZoom = clampZoom(zoom + deltaY/Math.pow(maxZoom,1/zoom)/100, minZoom, maxZoom);
     let newX = x+(zoom-newZoom)*mapSize.width/2;
     let newY = y+(zoom-newZoom)*mapSize.height/2;
+    // console.log({newY,zoom,newZoom,mapSize});
     this.transformMap({x:newX,y:newY,zoom:newZoom});
   }
 

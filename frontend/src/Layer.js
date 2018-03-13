@@ -16,9 +16,9 @@ class Layer extends Component {
             : <Location key={data.path['@attributes']['id']} data={data.path}/>
           : null
       }
-      {
+      {/* {
         (type==='routes')?<Pathfinder data={data} />:null
-      }
+      } */}
     </g>);
   }
 }

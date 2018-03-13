@@ -8,6 +8,8 @@ const mapDispatchToProps = (dispatch) => {
   return {}
 }
 
+
+
 const mapStateToProps = (state) => {
   return {
     fetchLocations: state.fetchLocations,
@@ -21,10 +23,12 @@ class AreasList extends Component {
 
   render() {
     console.log(this.props.locations);
+    let locations = this.props.locations;
+
     return (<List>
-      {this.props.locations.map((location) => {
-        return <ListItem button key={location['ID']}>
-          <ListItemText primary={location['post_title']} />
+      {locations.map((location) => {
+        return <ListItem button key={location['id']}>
+          <ListItemText primary={location['title']} />
         </ListItem>;
       })}
     </List>)
