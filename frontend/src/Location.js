@@ -1,6 +1,39 @@
 import React, {Component} from 'react'
 import {connect} from "react-redux";
+import { bindActionCreators } from 'redux';
+import getBounds from 'svg-path-bounds';
+
+
+const mapStateToProps = (state) => {
+  return {
+    selectedLocation: state.selectedLocation
+  }
+}
+
+const selectLocation = (location) => {
+  return {
+    type: 'SELECT_LOCATION',
+    payload: location
+  }
+}
+
+const setSelectedCenter = (d) => {
+
+  return {
+    type: 'SELECT_LOCATION',
+    payload: getBounds(d)
+  }
+}
+
+
+const mapDispatchToProps = (dispatch) => {
+  return {selectLocation: bindActionCreators(selectLocation, dispatch)}
+}
+
+
+
 class Location extends Component {
+
 
   constructor(props) {
    super(props);
@@ -9,15 +42,17 @@ class Location extends Component {
   componentDidMount() {}
 
   handleSelectLocation(e){
-    e.preventDefault();
+    this.props.selectLocation(e.target.id);
+
   }
 
   render() {
     let location = this.props.data;
     return (
-      <path key={location['@attributes']['id']} id={location['@attributes']['id']} d={location['@attributes']['d']} fill={location['@attributes']['fill']} onClick={this.handleSelectLocation} />
+      <path key={location['@attributes']['id']} id={location['@attributes']['id']} d={location['@attributes']['d']} fillOpacity={((this.props.selectedLocation===location['@attributes']['id'])||(this.props.selectedLocation===''))?1:0.5}
+        fill={(this.props.selectedLocation===location['@attributes']['id'])?'#000':location['@attributes']['fill']} onClick={this.handleSelectLocation} />
     )
   }
 }
 
-export default connect(null, null)(Location);
+export default connect(mapStateToProps, mapDispatchToProps)(Location);

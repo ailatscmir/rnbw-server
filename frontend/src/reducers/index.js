@@ -11,7 +11,9 @@ const initialState = {
     height: Number(),
     width: Number()
   },
-  currentFloor: '1'
+  currentFloor: '1',
+  selectedLocation: '',
+  
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -23,6 +25,7 @@ const rootReducer = (state = initialState, action) => {
     case 'GOTO_FLOOR': return {...state, currentFloor: action.payload};
     case 'SET_CONTAINER': return {...state, containerSize: action.payload};
     case 'SET_MAPSIZE': return {...state, mapSize: action.payload};
+    case 'SELECT_LOCATION': return {...state, selectedLocation: action.payload};
     default:
         return state;
   }
