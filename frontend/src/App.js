@@ -1,13 +1,16 @@
 import React, {Component,Fragment} from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from 'redux';
-import Reboot from 'material-ui/Reboot';
 import Grid from 'material-ui/Grid';
 import {CircularProgress} from 'material-ui/Progress';
 import { LinearProgress } from 'material-ui/Progress';
 import TextField from 'material-ui/TextField';
 import List, { ListItem, ListItemText,ListItemIcon } from 'material-ui/List';
+import ListSubheader from 'material-ui/List/ListSubheader';
 import {setFetchFlag, saveItems} from './actions/fetch';
+
+import KeyboardedInput from 'react-touch-screen-keyboard';
+import 'react-touch-screen-keyboard/lib/Keyboard.css';
 
 import LocationsList from './LocationsList';
 import InteractiveSvg from './InteractiveSvg';
@@ -41,6 +44,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      searchField: '',
       searchResult: []
     }
     this.handleSearchField = this.handleSearchField.bind(this);
@@ -70,33 +74,48 @@ class App extends Component {
   }
 
   handleSearchField(ev){
-    console.log(ev.target.value);
-    if (ev.target.value!==''){
+    console.log(ev);
+    let searchField = ev;
+    this.setState({searchField:searchField})
+    if (this.state.searchResult!==''){
       const searcher = new FuzzySearch(this.props.locations, ['title'], {
         caseSensitive: false,
       });
-      const result = searcher.search(ev.target.value);
+      const result = searcher.search(searchField);
       this.setState({searchResult:result});
     } else this.setState({searchResult:[]})
   }
-
+  handleCh(ev){
+    console.log(ev);
+  }
   render() {
-
+    let searchField= this.state.searchField;
     return (<div className="app">
-      <Reboot/>
         <Grid className='fullScreenFlex' container spacing={0}>
           <Grid item xs={6} md={2} className="scrollable">
+
             <TextField
               id="search"
               label="Поиск"
-          // className={classes.textField}
-              // value={this.state.search}
               onChange={this.handleSearchField}
               margin="normal"
             />
-            {(this.state.searchResult.length!==0)
-            ?<Fragment><p>Результаты поиска:</p>
-            <List component="div" disablePadding>
+            <KeyboardedInput
+              enabled
+              name='name'
+              inputClassName='MuiInput-input-'
+              value={searchField}
+              isDraggable={false}
+              defaultKeyboard="us"
+              secondaryKeyboard="ru"
+              isFirstLetterUppercase={false}
+              onChange={this.handleSearchField}
+            />
+
+            {(this.state.searchField!=='')
+            ?<Fragment>
+            <List component="div" disablePadding subheader={<ListSubheader component="div">Результаты поиска:</ListSubheader>}>
+
                  {this.state.searchResult.map((location) => {
 
                    return <ListItem button key={location.name} onClick={() => {this.selectLocation(location.name)}}>
@@ -112,7 +131,7 @@ class App extends Component {
           </Grid>
 
           <Grid item xs={6} md={10}>
-
+            
             {(this.props.map.length>0)?<InteractiveSvg data={this.props.map} />:<CircularProgress />}
           </Grid>
 

@@ -20,7 +20,6 @@ function clampPan(value, range) {
   } else {
     clampedValue = Math.abs(range / 2)
   };
-  console.log({value,range,clampedValue});
   return clampedValue;
 }
 
@@ -87,7 +86,8 @@ class InteractiveSvg extends Component {
       currentX: x,
       currentY: y,
       pan: false,
-      pinch: false
+      pinch: false,
+      hammerEvent:''
     };
     this.handlePan = this.handlePan.bind(this);
     this.handlePanStart = this.handlePanStart.bind(this);
@@ -160,6 +160,8 @@ class InteractiveSvg extends Component {
 
   handlePan(ev) {
     ev.preventDefault();
+    console.log(ev);
+    this.setState({hammerEvent:ev.type});
     let {x, y} = this.state;
     this.transformMap({
       x: x + ev.deltaX,
@@ -219,6 +221,7 @@ class InteractiveSvg extends Component {
 
   handlePinch(ev) {
     ev.preventDefault();
+    this.setState({hammerEvent:ev.type});
     let {x,y,zoom,mapSize} = this.state;
     let newZoom = zoom*ev.scale;
     let newX = x+(zoom-newZoom)*mapSize.width/2;
@@ -259,6 +262,7 @@ class InteractiveSvg extends Component {
       }}>
       <Hammer options={options} onWheel={this.handleWheel} onPanStart={this.handlePanStart} onPanEnd={this.handlePanEnd} onPanCancel={this.handlePanCancel} onPan={this.handlePan} onPinchStart={this.handlePinchStart} onPinchEnd={this.handlePinchEnd} onPinch={this.handlePinch}>
         <div>
+          <p>{this.state.hammerEvent}</p>
           <svg id='interactiveSvg' height={mapSize.height} width={mapSize.width} viewBox={'0 0 3500 1400'} preserveAspectRatio='xMidYMid meet'>
             <rect fill={'#fff'} x={0} y={0} height={containerSize.height} width={containerSize.width}/>
             <g className='controlGroup' transform={getTransformation({
