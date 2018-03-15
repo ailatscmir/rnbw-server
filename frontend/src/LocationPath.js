@@ -32,7 +32,7 @@ const mapDispatchToProps = (dispatch) => {
 
 
 
-class Location extends Component {
+class LocationPath extends Component {
 
 
   constructor(props) {
@@ -50,9 +50,9 @@ class Location extends Component {
     let location = this.props.data;
     return (
       <path key={location['@attributes']['id']} id={location['@attributes']['id']} d={location['@attributes']['d']} fillOpacity={((this.props.selectedLocation===location['@attributes']['id'])||(this.props.selectedLocation===''))?1:0.5}
-        fill={(this.props.selectedLocation===location['@attributes']['id'])?'#000':location['@attributes']['fill']} onClick={this.handleSelectLocation} />
+        fill={(this.props.selectedLocation===location['@attributes']['id'])?'#000':location['@attributes']['fill']}/>
     )
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Location);
+export default connect(mapStateToProps, mapDispatchToProps)(LocationPath);

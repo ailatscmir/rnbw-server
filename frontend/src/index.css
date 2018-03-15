@@ -40,3 +40,10 @@ html, body,#root {
   stroke: #fff;
   stroke-width: 2px;
 }
+
+.searchField{
+  width: 70%;
+  padding: 2% 5%;
+  margin: 0 0 0 5%;
+  font-size: 26px;
+}

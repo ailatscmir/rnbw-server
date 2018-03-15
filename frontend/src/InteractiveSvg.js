@@ -4,7 +4,9 @@ import Hammer from 'react-hammerjs';
 
 import sizeMe from 'react-sizeme';
 import {scale, translate, transform, toCSS} from 'transformation-matrix';
-
+import Button from 'material-ui/Button';
+import One from 'material-ui-icons/LooksOne';
+import Two from 'material-ui-icons/LooksTwo';
 import Floor from './Floor';
 
 function clampZoom(zoom, min, max) {
@@ -262,7 +264,6 @@ class InteractiveSvg extends Component {
       }}>
       <Hammer options={options} onWheel={this.handleWheel} onPanStart={this.handlePanStart} onPanEnd={this.handlePanEnd} onPanCancel={this.handlePanCancel} onPan={this.handlePan} onPinchStart={this.handlePinchStart} onPinchEnd={this.handlePinchEnd} onPinch={this.handlePinch}>
         <div>
-          <p>{this.state.hammerEvent}</p>
           <svg id='interactiveSvg' height={mapSize.height} width={mapSize.width} viewBox={'0 0 3500 1400'} preserveAspectRatio='xMidYMid meet'>
             <rect fill={'#fff'} x={0} y={0} height={containerSize.height} width={containerSize.width}/>
             <g className='controlGroup' transform={getTransformation({
@@ -276,7 +277,6 @@ class InteractiveSvg extends Component {
                   ? currentZoom
                   : zoom
               })}>
-              {/* <rect fill={'#ccc'} x={0} y={0} height={mapSize.height} width={mapSize.width}/>  */}
               {
                 floors.map((floor, index) => {
                   return <Floor key={floor['title']} index={index} data={floor['g']}/>;
@@ -284,6 +284,12 @@ class InteractiveSvg extends Component {
               }
             </g>
           </svg>
+          <Button style={{position:'absolute',bottom:'16px',right:'86px'}} variant="fab" color="secondary" aria-label="edit">
+              <One />
+          </Button>
+          <Button style={{position:'absolute',bottom:'16px',right:'16px'}} variant="fab" color="secondary" aria-label="edit">
+              <Two />
+          </Button>
         </div>
       </Hammer>
     </div>);
