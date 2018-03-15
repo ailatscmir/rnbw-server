@@ -93,13 +93,6 @@ class App extends Component {
     return (<div className="app">
         <Grid className='fullScreenFlex' container spacing={0}>
           <Grid item xs={6} md={2} className="scrollable">
-
-            <TextField
-              id="search"
-              label="Поиск"
-              onChange={this.handleSearchField}
-              margin="normal"
-            />
             <KeyboardedInput
               enabled
               name='name'
@@ -108,6 +101,7 @@ class App extends Component {
               isDraggable={false}
               defaultKeyboard="us"
               secondaryKeyboard="ru"
+              placeHolder={'Поиск'}
               isFirstLetterUppercase={false}
               onChange={this.handleSearchField}
             />
@@ -131,7 +125,7 @@ class App extends Component {
           </Grid>
 
           <Grid item xs={6} md={10}>
-            
+
             {(this.props.map.length>0)?<InteractiveSvg data={this.props.map} />:<CircularProgress />}
           </Grid>
 
